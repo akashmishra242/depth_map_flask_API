@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from flask import Flask, request, make_response
-import io
 
 app = Flask(__name__)
 
@@ -14,13 +13,17 @@ def create_depth_map():
     # Retrieve the two image files from the request
     image1 = request.files['image1']
     image2 = request.files['image2']
-    
+
+    # Prompt the user to input values for numDisparities and blockSize
+    numDisparities = int(request.form.get('numDisparities', 16))
+    blockSize = int(request.form.get('blockSize', 15))
+
     # Convert the images to grayscale
     img1 = cv2.imdecode(np.fromstring(image1.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
     img2 = cv2.imdecode(np.fromstring(image2.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
 
     # Compute the depth map using OpenCV's StereoBM
-    stereo = cv2.StereoBM_create(numDisparities=16, blockSize=15)
+    stereo = cv2.StereoBM_create(numDisparities=numDisparities, blockSize=blockSize)
     depth = stereo.compute(img1, img2)
 
     # Convert the depth map to a PNG image
