@@ -5,4 +5,3 @@ opencv-python
 gunicorn
 azure-storage-blob
 python-dotenv
-mimetypes
